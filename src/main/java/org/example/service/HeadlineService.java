@@ -1,7 +1,10 @@
 package org.example.service;
 
+import org.example.mapper.HeadlineMapper;
 import org.example.pojo.Headline;
 import com.baomidou.mybatisplus.extension.service.IService;
+import org.example.pojo.vo.PortalVo;
+import org.example.utils.Result;
 
 /**
 * @author ASUS
@@ -10,4 +13,8 @@ import com.baomidou.mybatisplus.extension.service.IService;
 */
 public interface HeadlineService extends IService<Headline> {
 
+
+    Result findNewPage(PortalVo portalVo);
+
+    Result showHeadlineDetail(Integer hid);
 }

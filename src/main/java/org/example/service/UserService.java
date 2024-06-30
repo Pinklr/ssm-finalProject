@@ -19,4 +19,6 @@ public interface UserService extends IService<User> {
     Result checkUserName(String username);
 
     Result regist(User user);
+
+
 }

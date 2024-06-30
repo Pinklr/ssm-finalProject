@@ -1,7 +1,12 @@
 package org.example.mapper;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import org.apache.ibatis.annotations.Param;
 import org.example.pojo.Headline;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import org.example.pojo.vo.PortalVo;
+
+import java.util.Map;
 
 /**
 * @author ASUS
@@ -11,6 +16,9 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 */
 public interface HeadlineMapper extends BaseMapper<Headline> {
 
+    IPage<Map> selectMyPage(IPage page, @Param("portalVo")PortalVo portalVo);
+
+    Map selectDetailMap(Integer hid);
 }
 
 
