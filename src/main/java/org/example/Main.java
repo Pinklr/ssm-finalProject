@@ -1,5 +1,6 @@
 package org.example;
 
+import com.alibaba.druid.pool.DruidDataSource;
 import com.baomidou.mybatisplus.annotation.DbType;
 import com.baomidou.mybatisplus.extension.plugins.MybatisPlusInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.inner.BlockAttackInnerInterceptor;
@@ -8,6 +9,7 @@ import com.baomidou.mybatisplus.extension.plugins.inner.PaginationInnerIntercept
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 
 @SpringBootApplication
@@ -28,4 +30,12 @@ public class Main {
         return interceptor;
     }
 
+
+    @Bean("dataSource")
+    @ConfigurationProperties(prefix = "spring.datasource.druid")
+    public DruidDataSource dataSource(){
+        return new DruidDataSource();
+
+
+    }
 }

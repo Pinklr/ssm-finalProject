@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -52,11 +53,60 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
             data.put("token", token);
             return Result.ok(data);
 
-
         }
 
         return Result.build(null, ResultCodeEnum.PASSWORD_ERROR);
     }
+
+    @Override
+    public Result getUserInfo(String token) {
+
+        if(jwtHelper.isExpiration(token) ) {
+            return Result.build(null, ResultCodeEnum.NOTLOGIN);
+        }else {
+            Long uid = jwtHelper.getUserId(token);
+            User loginUser = userMapper.selectById(uid);
+            if(loginUser == null) {
+                return Result.build(null, ResultCodeEnum.NOTLOGIN);
+            }else {
+                loginUser.setUserPwd("");
+                Map map = new HashMap();
+                map.put("loginUser", loginUser);
+                return Result.ok(map);
+            }
+        }
+
+
+
+
+    }
+
+    @Override
+    public Result checkUserName(String username) {
+        LambdaQueryWrapper<User> lambdaQueryWrapper = new LambdaQueryWrapper<>();
+        lambdaQueryWrapper.eq(User::getUsername, username);
+        List<User> users = userMapper.selectList(lambdaQueryWrapper);
+        if(users.isEmpty()) return Result.ok(null);
+        else return Result.build(null, ResultCodeEnum.USERNAME_USED);
+
+
+    }
+
+    @Override
+    public Result regist(User user) {
+
+        LambdaQueryWrapper<User> lambdaQueryWrapper = new LambdaQueryWrapper<>();
+        lambdaQueryWrapper.eq(User::getUsername, user.getUsername());
+        int count = Math.toIntExact(userMapper.selectCount(lambdaQueryWrapper));
+        if(count > 0) return Result.build(null, ResultCodeEnum.USERNAME_USED);
+
+        user.setUserPwd(MD5Util.encrypt(user.getUserPwd()));
+        int row = userMapper.insert(user);
+        if(row == 1) return Result.ok(null);
+        return Result.build(null,ResultCodeEnum.USERNAME_USED);
+    }
+
+
 }
 
 
