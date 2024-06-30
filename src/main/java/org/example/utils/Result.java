@@ -1,6 +1,5 @@
 package org.example.utils;
-
-
+import org.example.utils.ResultCodeEnum;
 
 /**
  * 全局统一返回结果类
@@ -26,9 +25,11 @@ public class Result<T> {
         result.setMessage(message);
         return result;
     }
-    public static <T, ResultCodeEnum> Result<T> build(T body, ResultCodeEnum resultCodeEnum) {
+    public static <T, ResultCodeEnum> Result<T> build(T body, org.example.utils.ResultCodeEnum resultCodeEnum) {
 
         Result<T> result = build(body);
+
+
         result.setCode(resultCodeEnum.getCode());
         result.setMessage(resultCodeEnum.getMessage());
         return result;
