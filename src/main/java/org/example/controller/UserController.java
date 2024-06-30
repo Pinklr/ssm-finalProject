@@ -51,6 +51,12 @@ public class UserController {
         return result;
     }
 
+    @GetMapping("checkLogin")
+    public Result checkLogin(@RequestHeader String token) {
+        Result result= userService.checkLogin(token);
+        return result;
+
+    }
 
 
 

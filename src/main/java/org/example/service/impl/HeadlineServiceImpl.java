@@ -7,10 +7,12 @@ import org.example.pojo.Headline;
 import org.example.pojo.vo.PortalVo;
 import org.example.service.HeadlineService;
 import org.example.mapper.HeadlineMapper;
+import org.example.utils.JwtHelper;
 import org.example.utils.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -27,11 +29,14 @@ public class HeadlineServiceImpl extends ServiceImpl<HeadlineMapper, Headline>
     @Autowired
     private HeadlineMapper headlineMapper;
 
+    @Autowired
+    private JwtHelper jwtHelper;
+
 
     @Override
     public Result findNewPage(PortalVo portalVo) {
 
-        IPage<Map> page = new Page<>();
+        IPage<Map> page = new Page<>(portalVo.getPageNum(), portalVo.getPageSize());
         headlineMapper.selectMyPage(page, portalVo);
 
         List<Map> records = page.getRecords();
@@ -63,6 +68,46 @@ public class HeadlineServiceImpl extends ServiceImpl<HeadlineMapper, Headline>
         headlineMapper.updateById(headline1);
 
         return Result.ok(data);
+    }
+
+    @Override
+    public Result publish(Headline headline, String token) {
+
+//        判断是否登录的功能在拦截器中进行实现
+
+        int id = jwtHelper.getUserId(token).intValue();
+        headline.setPublisher(id);
+        headline.setCreateTime(new Date());
+        headline.setUpdateTime(new Date());
+        headline.setPageViews(0);
+        headlineMapper.insert(headline);
+        return Result.ok(null);
+
+
+    }
+
+    @Override
+    public Result findHeadlineByHid(Integer hid) {
+        Headline headline = headlineMapper.selectById(hid);
+        Map data = new HashMap();
+        data.put("headline", headline);
+        return  Result.ok(data);
+    }
+
+    @Override
+    public Result myUpdate(Headline headline) {
+        Integer version = headlineMapper.selectById(headline.getHid()).getVersion();
+        headline.setUpdateTime(new Date());
+        headline.setVersion(version);
+        headlineMapper.updateById(headline);
+        return Result.ok(null);
+    }
+
+    @Override
+    public Result removeByHid(Integer hid) {
+        headlineMapper.deleteById(hid);
+
+        return Result.ok(null);
     }
 }
 

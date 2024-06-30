@@ -21,4 +21,5 @@ public interface UserService extends IService<User> {
     Result regist(User user);
 
 
+    Result checkLogin(String token);
 }

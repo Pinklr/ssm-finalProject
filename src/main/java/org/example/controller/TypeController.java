@@ -28,7 +28,7 @@ public class TypeController {
         return  result;
     }
 
-    @PostMapping("findNewPage")
+    @PostMapping("findNewsPage")
     public Result findNewPage(@RequestBody PortalVo portalVo) {
         Result result = headlineService.findNewPage(portalVo);
         return result;
